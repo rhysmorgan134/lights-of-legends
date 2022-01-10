@@ -1,57 +1,160 @@
 const request = require('request');
 const axios = require('axios')
 const url = 'https://127.0.0.1:2999/liveclientdata/allgamedata'
+const eventsUrl = 'https://127.0.0.1:2999/liveclientdata/eventdata'
+const playerUrl = 'https://127.0.0.1:2999/liveclientdata/activeplayername'
+const playersUrl = 'https://127.0.0.1:2999/liveclientdata/playerlist'
 const Player = require('./Player');
 const player = new Player()
 const lights = require('./lights.json')
+const LightController = require('./LightController')
+const light = new LightController('192.168.0.204', 0.4, 0.4)
+const fs = require('fs')
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
-
+let eventCount = 0
+let connected = false
+let thisPlayer = false
+let players = []
+let rgb = require('./openRGB')
+const { fork } = require("child_process");
+rgb()
 const poll = (url) => {
+    //rgb()
     axios.get(url)
         .then((response) => {
             player.updateStats(response.data.activePlayer.championStats)
-        })  .catch(function (error) {
+            if(connected == false) {
+                axios.get(playerUrl)
+                    .then((response) => {
+                        thisPlayer = response.data
+                        connected = true
+                        light.clear()
+                    }).catch(function (error) {
+                    if (error.response) {
+                        connected = false
+                    } else if (error.request) {
+                        connected = false
+                    } else {
+                        connected = false
+                    }
+                })
+            }
+        }).catch(function (error) {
         if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
+            eventCount = 0
+            if(connected) {
+                light.clear()
+                connected = false
+            }
         } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            console.log(error.request);
+            eventCount = 0
+            if(connected) {
+                light.clear()
+                connected = false
+            }
         } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log('Error', error.message);
+            eventCount = 0
+            if(connected) {
+                light.clear()
+                connected = false
+            }
         }
-        console.log(error.config);
     });
 }
 
+const pollEvents = (url) => {
+    axios.get(url)
+        .then((response) => {
+            let events = response.data.Events
+            console.log(events.length, eventCount)
+            if(events.length > eventCount) {
+                for (let i = eventCount; i < events.length; i++) {
+                    console.log(events[i].EventName)
+                    if (events[i].EventName === 'FirstBlood') {
+                        console.log(thisPlayer)
+                        if (events[i].KillerName === thisPlayer) {
+                            light.firstBlood()
+                        }
+                    } else if (events[i].EventName === 'ChampionKill') {
+                        if (events[i].KillerName === thisPlayer) {
+                            light.championKill()
+                        }
+                    }
+                }
+            }
+            eventCount = events.length
+        }).catch(function (error) {
+        if (error.response) {
+            eventCount = 0
+            if(connected) {
+                light.clear()
+                connected = false
+            }
+        } else if (error.request) {
+            eventCount = 0
+            if(connected) {
+                light.clear()
+                connected = false
+            }
+        } else {
+            data = lights.hpOk
+            eventCount = 0
+            if(connected) {
+                light.clear()
+                connected = false
+            }
+            const res = axios.post('http://192.168.0.204/json/state', data);
+        }
+    });
+}
+
+const getPlayers = (url) => {
+    axios.get(url)
+        .then((response) => {
+
+        }).catch(function (error) {
+        if (error.response) {
+            eventCount = 0
+            if(connected) {
+                light.clear()
+                connected = false
+            }
+        } else if (error.request) {
+            eventCount = 0
+            if(connected) {
+                light.clear()
+                connected = false
+            }
+        } else {
+            eventCount = 0
+            if(connected) {
+                light.clear()
+                connected = false
+            }
+        }
+    })
+}
+
+
 player.on('hpActive', (data) => {
-    let hp = (data/0.4) * 255
-    data = lights.hpLow
-    data.seg[0].sx = hp
-    console.log(data)
-    const res = axios.post('http://192.168.0.204/json/state', data);
-    console.log(res)
+    console.log('active')
+    light.lowHp(data)
 })
 
 player.on('hpClear', (data) => {
-    data = lights.hpOk
-    const res = axios.post('http://192.168.0.204/json/state', data);
+    console.log('clear')
+    light.clear()
 })
 
 player.on('hpUpdate', (data) => {
-    let hp = 255 - ((data/0.4) * 255)
-    cont = lights.hp
-    cont.seg[0].sx = hp
-    console.log(hp)
-    const res = axios.post('http://192.168.0.204/json/state', cont);
+    console.log('update')
+    light.lowHp(data)
 })
 
 setInterval(()=> {
     poll(url)
+}, 100)
+
+setInterval(()=> {
+    pollEvents(eventsUrl)
 }, 100)

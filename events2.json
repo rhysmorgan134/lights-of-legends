@@ -1,0 +1,249 @@
+[
+  {
+    "EventID": 0,
+    "EventName": "GameStart",
+    "EventTime": 0.04680449888110161
+  },
+  {
+    "EventID": 1,
+    "EventName": "MinionsSpawning",
+    "EventTime": 65.04936981201172
+  },
+  {
+    "Assisters": [
+      "vChilli"
+    ],
+    "EventID": 2,
+    "EventName": "ChampionKill",
+    "EventTime": 204.77899169921875,
+    "KillerName": "lCaptainMorgan",
+    "VictimName": "MonteMentality"
+  },
+  {
+    "EventID": 3,
+    "EventName": "FirstBlood",
+    "EventTime": 204.77899169921875,
+    "Recipient": "lCaptainMorgan"
+  },
+  {
+    "Assisters": [],
+    "EventID": 4,
+    "EventName": "ChampionKill",
+    "EventTime": 233.81491088867188,
+    "KillerName": "TelfordUK",
+    "VictimName": "Jalili211"
+  },
+  {
+    "Assisters": [],
+    "EventID": 5,
+    "EventName": "ChampionKill",
+    "EventTime": 261.14501953125,
+    "KillerName": "SanaBae",
+    "VictimName": "TelfordUK"
+  },
+  {
+    "Assisters": [],
+    "EventID": 6,
+    "EventName": "ChampionKill",
+    "EventTime": 306.8939208984375,
+    "KillerName": "SanaBae",
+    "VictimName": "lCaptainMorgan"
+  },
+  {
+    "Assisters": [],
+    "EventID": 7,
+    "EventName": "ChampionKill",
+    "EventTime": 342.28167724609375,
+    "KillerName": "Jalili211",
+    "VictimName": "TelfordUK"
+  },
+  {
+    "Assisters": [],
+    "EventID": 8,
+    "EventName": "ChampionKill",
+    "EventTime": 373.3236083984375,
+    "KillerName": "vChilli",
+    "VictimName": "MonteMentality"
+  },
+  {
+    "Assisters": [
+      "SanaBae"
+    ],
+    "EventID": 9,
+    "EventName": "ChampionKill",
+    "EventTime": 448.4541320800781,
+    "KillerName": "Jalili211",
+    "VictimName": "TelfordUK"
+  },
+  {
+    "Assisters": [],
+    "DragonType": "Air",
+    "EventID": 10,
+    "EventName": "DragonKill",
+    "EventTime": 500.44677734375,
+    "KillerName": "SanaBae",
+    "Stolen": "False"
+  },
+  {
+    "Assisters": [
+      "JhiungSuiguNnNn"
+    ],
+    "EventID": 11,
+    "EventName": "ChampionKill",
+    "EventTime": 575.8043212890625,
+    "KillerName": "wAo0",
+    "VictimName": "SP4 Hamza"
+  },
+  {
+    "Assisters": [
+      "lCaptainMorgan",
+      "SP4 Hamza",
+      "Bleming"
+    ],
+    "EventID": 12,
+    "EventName": "ChampionKill",
+    "EventTime": 577.2664184570312,
+    "KillerName": "TelfordUK",
+    "VictimName": "wAo0"
+  },
+  {
+    "Assisters": [
+      "TelfordUK",
+      "SP4 Hamza",
+      "Bleming"
+    ],
+    "EventID": 13,
+    "EventName": "ChampionKill",
+    "EventTime": 582.0471801757812,
+    "KillerName": "lCaptainMorgan",
+    "VictimName": "JhiungSuiguNnNn"
+  },
+  {
+    "Assisters": [],
+    "EventID": 14,
+    "EventName": "ChampionKill",
+    "EventTime": 593.5789184570312,
+    "KillerName": "MonteMentality",
+    "VictimName": "vChilli"
+  },
+  {
+    "Assisters": [],
+    "EventID": 15,
+    "EventName": "ChampionKill",
+    "EventTime": 700.39892578125,
+    "KillerName": "lCaptainMorgan",
+    "VictimName": "Jalili211"
+  },
+  {
+    "Assisters": [
+      "JhiungSuiguNnNn"
+    ],
+    "EventID": 16,
+    "EventName": "ChampionKill",
+    "EventTime": 741.2513427734375,
+    "KillerName": "wAo0",
+    "VictimName": "SP4 Hamza"
+  },
+  {
+    "Assisters": [
+      "JhiungSuiguNnNn"
+    ],
+    "EventID": 17,
+    "EventName": "TurretKilled",
+    "EventTime": 780.5653686523438,
+    "KillerName": "wAo0",
+    "TurretKilled": "Turret_T1_R_03_A"
+  },
+  {
+    "EventID": 18,
+    "EventName": "FirstBrick",
+    "EventTime": 780.5653686523438,
+    "KillerName": "wAo0"
+  },
+  {
+    "Assisters": [
+      "SanaBae"
+    ],
+    "EventID": 19,
+    "EventName": "ChampionKill",
+    "EventTime": 802.0028076171875,
+    "KillerName": "Jalili211",
+    "VictimName": "lCaptainMorgan"
+  },
+  {
+    "Assisters": [],
+    "EventID": 20,
+    "EventName": "ChampionKill",
+    "EventTime": 808.7089233398438,
+    "KillerName": "SanaBae",
+    "VictimName": "TelfordUK"
+  },
+  {
+    "Assisters": [
+      "JhiungSuiguNnNn"
+    ],
+    "EventID": 21,
+    "EventName": "ChampionKill",
+    "EventTime": 873.3255615234375,
+    "KillerName": "wAo0",
+    "VictimName": "TelfordUK"
+  },
+  {
+    "Assisters": [
+      "SanaBae"
+    ],
+    "EventID": 22,
+    "EventName": "ChampionKill",
+    "EventTime": 890.9651489257812,
+    "KillerName": "Jalili211",
+    "VictimName": "Bleming"
+  },
+  {
+    "Assisters": [],
+    "EventID": 23,
+    "EventName": "ChampionKill",
+    "EventTime": 900.4857788085938,
+    "KillerName": "Jalili211",
+    "VictimName": "SP4 Hamza"
+  },
+  {
+    "EventID": 24,
+    "EventName": "Multikill",
+    "EventTime": 900.4857788085938,
+    "KillStreak": 2,
+    "KillerName": "Jalili211"
+  },
+  {
+    "Assisters": [
+      "JhiungSuiguNnNn"
+    ],
+    "EventID": 25,
+    "EventName": "TurretKilled",
+    "EventTime": 917.2447509765625,
+    "KillerName": "Minion_T200L1S28N0176",
+    "TurretKilled": "Turret_T1_C_05_A"
+  },
+  {
+    "Assisters": [],
+    "DragonType": "Fire",
+    "EventID": 26,
+    "EventName": "DragonKill",
+    "EventTime": 932.4111938476562,
+    "KillerName": "SanaBae",
+    "Stolen": "False"
+  },
+  {
+    "Assisters": [],
+    "EventID": 27,
+    "EventName": "ChampionKill",
+    "EventTime": 938.79931640625,
+    "KillerName": "MonteMentality",
+    "VictimName": "vChilli"
+  },
+  {
+    "EventID": 28,
+    "EventName": "GameEnd",
+    "EventTime": 949.4901733398438,
+    "Result": "Lose"
+  }
+]
