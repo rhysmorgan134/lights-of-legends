@@ -2,6 +2,8 @@ const EventEmitter = require('events')
 const axios = require('axios')
 const Player = require('./Player');
 const LightController = require('./LightController')
+const LightControllerRGB = require('./LightControllerRGB')
+const settings = require("./settings.json")
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
 let rgb = require('./openRGB')
@@ -9,6 +11,7 @@ let rgb = require('./openRGB')
 class Poll extends EventEmitter {
     constructor() {
         super()
+        this.wledURL = settings.wledURL
         this.allDataUrl = 'https://127.0.0.1:2999/liveclientdata/allgamedata'
         this.eventsUrl = 'https://127.0.0.1:2999/liveclientdata/eventdata'
         this.playerUrl = 'https://127.0.0.1:2999/liveclientdata/activeplayername'
@@ -20,9 +23,17 @@ class Poll extends EventEmitter {
         this.currentName = false
         this.playerOffset = null
         this.lastCreepScore = 0
-        this.rgb = rgb()
+        this.loaded = false
+
         this.player = new Player()
-        this.light = new LightController('192.168.0.204', 0.4, 0.4)
+        if(settings.wled) {
+            this.light = new LightController('192.168.0.204', 0.4, 0.4, settings.wled, settings.openRGB)
+            this.rgb = rgb()
+        } else {
+            this.light = new LightControllerRGB()
+            this.light.connect()
+        }
+
 
         setInterval(() => {
                 this._poll.bind(this)()
@@ -34,13 +45,19 @@ class Poll extends EventEmitter {
 
         this.player.on('hpClear', (data) => {
             console.log('clear')
-            light.clear()
+            this.light.clear()
         })
 
         this.player.on('hpUpdate', (data) => {
             console.log('update')
-            light.lowHp(data)
+            this.light.lowHp(data)
         })
+
+        setInterval(() => {
+            if(this.connected) {
+                this.emit('update', this.players)
+            }
+        }, 10000)
 
     }
 
@@ -49,6 +66,7 @@ class Poll extends EventEmitter {
         axios.get(this.allDataUrl)
             .then((response) => {
                 this.player.updateStats(response.data.activePlayer.championStats)
+                console.log(this.connected)
                 if (this.connected === false) {
                     this.currentName = response.data.activePlayer.summonerName
                     this.players = response.data.allPlayers
@@ -63,6 +81,7 @@ class Poll extends EventEmitter {
                     }
                     this.light.clear()
                     this.connected = true
+                    this.emit('gameLoaded', response.data.allPlayers)
                     console.log("connected")
                 }
                 if(this.connected) {
@@ -70,6 +89,7 @@ class Poll extends EventEmitter {
                     // console.log(response.data.allPlayers)
                     // this.parseScore(response.data.allPlayers[this.playerOffset].scores.creepScore)
                     this.parseScore(response.data.activePlayer.currentGold)
+                    this.players = response.data.allPlayers
                 }
             }).catch((error) => {
             if (error.response) {
@@ -86,7 +106,7 @@ class Poll extends EventEmitter {
                 if (this.connected) {
                     this.light.clear()
                     this.connected = false
-                    console.log("disconnected")
+                    console.log("disconnected", error.request)
                 }
             } else {
                 //console.log("error", this, this.eventCount)
@@ -94,7 +114,7 @@ class Poll extends EventEmitter {
                 if (this.connected) {
                     this.light.clear()
                     this.connected = false
-                    console.log("disconnected")
+                    console.log("disconnected", error)
                 }
             }
         });
