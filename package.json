@@ -1,16 +1,84 @@
 {
-  "name": "leagueLights",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "electronApp",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "./",
+  "main": "public/main.js",
+  "author": {
+    "name": "Rhys Morgan",
+    "email": "rhysm134@gmail.com",
+    "url": "https://your-website.com"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "build": {
+    "appId": "com.morgamation.league-of-lights",
+    "productName": "LeagueOfLights",
+    "copyright": "",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
   "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@fontsource/roboto": "^4.5.1",
+    "@material-ui/core": "^4.12.3",
+    "@mui/icons-material": "^5.2.5",
+    "@mui/material": "^5.2.7",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
     "axios": "^0.24.0",
-    "openrgb-sdk": "^0.5.1"
+    "concurrently": "^7.0.0",
+    "cross-env": "^7.0.3",
+    "electron-is-dev": "^2.0.0",
+    "material-icons": "^1.10.5",
+    "openrgb-sdk": "^0.5.1",
+    "react": "^17.0.2",
+    "react-color": "^3.0.0-beta.3",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^6.2.1",
+    "react-scripts": "5.0.0",
+    "typescript": "^4.5.4",
+    "web-vitals": "^2.1.3"
+  },
+  "devDependencies": {
+    "electron-builder": "^22.14.5",
+    "electron": "^16.0.6",
+    "wait-on": "^6.0.0"
+  },
+  "scripts": {
+    "start": "electronApp/node_modules/.bin/react-scripts start",
+    "build": "electronApp/node_modules/.bin/react-scripts build",
+    "test": "electronApp/node_modules/.bin/react-scripts test",
+    "eject": "electronApp/node_modules/.bin/react-scripts eject",
+    "electron-dev": "electronApp/node_modules/.bin/concurrently \\\"cross-env BROWSER=none npm start\\\" \\\"wait-on http://localhost:3000 && electron .\\\"",
+    "postinstall": "electronApp/node_modules/.bin/electron-builder install-app-deps",
+    "preelectron-pack": "npm run build",
+    "electron-pack": "electronApp/node_modules/.bin/electron-builder build -w -c.extraMetadata.main=build/main.js --publish never"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
