@@ -1,13 +1,13 @@
 {
-  "name": "electronApp",
-  "version": "0.1.0",
+  "name": "League Of Lights",
+  "version": "0.0.2",
   "private": true,
   "homepage": "./",
   "main": "public/main.js",
   "author": {
     "name": "Rhys Morgan",
     "email": "rhysm134@gmail.com",
-    "url": "https://your-website.com"
+    "url": "https://github.com/rhysmorgan134/lights-of-legends"
   },
   "build": {
     "appId": "com.morgamation.league-of-lights",
