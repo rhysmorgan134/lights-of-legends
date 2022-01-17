@@ -5,8 +5,10 @@ const LightController = require('./LightController')
 const LightControllerRGB = require('./LightControllerRGB')
 const settings = require("./settings.json")
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+const path = require('path')
+const fs = require('fs')
 
-let rgb = require('./openRGB')
+let rgb = require('./openRGBClass')
 
 class Poll extends EventEmitter {
     constructor() {
@@ -16,7 +18,8 @@ class Poll extends EventEmitter {
         this.eventsUrl = 'https://127.0.0.1:2999/liveclientdata/eventdata'
         this.playerUrl = 'https://127.0.0.1:2999/liveclientdata/activeplayername'
         this.playersUrl = 'https://127.0.0.1:2999/liveclientdata/playerlist'
-
+        this.rawSettings = fs.readFileSync(path.join(__dirname, 'settings.json'))
+        this.settings = JSON.parse(this.rawSettings)
         this.eventCount = 0
         this.connected = false
         this.players = []
@@ -24,18 +27,17 @@ class Poll extends EventEmitter {
         this.playerOffset = null
         this.lastCreepScore = 0
         this.loaded = false
-        console.log(settings.defaultCol)
-        this.defaultCol = settings.defaultCol
-
+        this.defaultCol = this.settings.defaultCol
         this.player = new Player()
-        if(settings.wled) {
-            this.light = new LightController('192.168.0.204', 0.4, 0.4, settings.wled, settings.openRGB, this.defaultCol)
-            this.rgb = rgb()
+        if(this.settings.wled) {
+            this.light = new LightController(this.settings.wledURL, 0.4, 0.4, this.settings.wled, this.settings.openRGB, this.defaultCol)
+            if(this.settings.openRGB) {
+                this.rgb = new rgb(this.settings.wledURL)
+            }
         } else {
             this.light = new LightControllerRGB(this.defaultCol)
             this.light.connect()
         }
-
 
         setInterval(() => {
                 this._poll.bind(this)()
@@ -46,12 +48,10 @@ class Poll extends EventEmitter {
             })
 
         this.player.on('hpClear', (data) => {
-            console.log('clear')
             this.light.clear()
         })
 
         this.player.on('hpUpdate', (data) => {
-            console.log('update')
             this.light.lowHp(data)
         })
 
@@ -61,6 +61,10 @@ class Poll extends EventEmitter {
             }
         }, 10000)
 
+        setInterval(() => {
+            this.getConnections()
+        }, 1000)
+
     }
 
 
@@ -68,7 +72,6 @@ class Poll extends EventEmitter {
         axios.get(this.allDataUrl)
             .then((response) => {
                 this.player.updateStats(response.data.activePlayer.championStats)
-                console.log(this.connected)
                 if (this.connected === false) {
                     this.currentName = response.data.activePlayer.summonerName
                     this.players = response.data.allPlayers
@@ -81,22 +84,17 @@ class Poll extends EventEmitter {
                             console.log("PLAYER OFFSET", i)
                         }
                     }
-                    console.log("clear")
                     this.light.clear()
                     this.connected = true
                     this.emit('gameLoaded', response.data.allPlayers)
-                    console.log("connected")
                 }
                 if(this.connected) {
                     this.parseEvents(response.data.events.Events)
-                    // console.log(response.data.allPlayers)
-                    // this.parseScore(response.data.allPlayers[this.playerOffset].scores.creepScore)
                     this.parseScore(response.data.activePlayer.currentGold)
                     this.players = response.data.allPlayers
                 }
             }).catch((error) => {
             if (error.response) {
-                //console.log(error.response)
                 this.eventCount = 0
                 if (this.connected) {
                     this.light.clear()
@@ -127,9 +125,19 @@ class Poll extends EventEmitter {
         this.light.setDefault(data)
     }
 
+    updateSettings(data) {
+        fs.writeFileSync(path.join(__dirname, 'settings.json'), JSON.stringify(data))
+        this.settings = data
+        this.light.setDefault(data.defaultCol)
+        this.light.clear()
+    }
+
+    getSettings() {
+        return this.settings
+    }
+
     parseEvents(events) {
         if (events.length > this.eventCount) {
-            console.log(events[events.length -1])
             for (let i = this.eventCount; i < events.length; i++) {
                 if (events[i].EventName === 'FirstBlood') {
                     if (events[i].KillerName === this.currentName) {
@@ -150,6 +158,31 @@ class Poll extends EventEmitter {
             this.light.minionKill()
         }
         this.lastCreepScore = score
+    }
+
+    getConnections() {
+        let connections ={
+            wled: false,
+            openRGBToWled: false,
+            openRGB: false
+        }
+        if(this.settings.wled) {
+            connections.wled = this.light.connected
+            if(this.settings.openRGB) {
+                connections.openRGBToWled = this.rgb.wledConnection
+                connections.openRGB = this.rgb.connected
+            } else {
+                connections.openRGB = false
+                connections.openRGBToWled = false
+            }
+        }else if(this.settings.openRGB) {
+            connections.openRGB = this.light.connected
+            connections.wled = false
+            connections.openRGBToWled = false
+        }
+
+        this.emit('connection', connections)
+
     }
 }
 

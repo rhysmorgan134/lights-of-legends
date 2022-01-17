@@ -6,7 +6,7 @@ const ledClient = axios.create({
     baseURL: `http://${ip}/json/state`,
     httpsAgent: new https.Agent({rejectUnauthorized: false})
 })
-
+let connected = false;
 
 
 async function start () {
@@ -15,12 +15,14 @@ async function start () {
     await client.connect()
 
     const controllerCount = await client.getControllerCount()
-
+    connected = true
     let deviceList = []
     for (let deviceId = 0; deviceId < controllerCount; deviceId++) {
         deviceList.push(await client.getControllerData(deviceId))
         await client.updateMode(deviceId, 'Direct')
     }
+
+
 
     setInterval(() => {
         ledClient.get('').then((request) => {
@@ -38,9 +40,15 @@ async function start () {
             // client.updateLeds(1, [utils.color(request.data.seg[0].col[0][0], request.data.seg[0].col[0][1], request.data.seg[0].col[0][2])])
             // client.updateLeds(2, [utils.color(request.data.seg[0].col[0][0], request.data.seg[0].col[0][1], request.data.seg[0].col[0][2])])
         }).catch((error) => {
-            console.log("can't connect to wled")
+            console.log("can't connect to wled", error)
+            connected = false
         })
     }, 110)
 }
 
-module.exports = start
+const connectCheck = () => {
+    return connected
+}
+
+
+module.exports = {start: start, connected: connectCheck}

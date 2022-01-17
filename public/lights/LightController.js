@@ -4,7 +4,7 @@ const https = require('https')
 const lights = require("./lights.json");
 
 class LightController {
-    constructor(ip, lowHpTh, lowManaTh, settingWled, settingsRGB, defaultCol, ) {
+    constructor(ip, lowHpTh, lowManaTh, settingWled, settingsRGB, defaultCol ) {
         this.url = `http://${ip}/json/state`
         this.ledClient = axios.create({
             baseURL: `http://${ip}/json/state`,
@@ -16,8 +16,12 @@ class LightController {
         this.lowManaTh = lowManaTh
         this.storedVal = {}
         this.notifQueue = []
+        this.connected = false
         setTimeout(() => {
             this.clear()
+        }, 1000)
+        setInterval(() => {
+            this._connectionCheck()
         }, 1000)
     }
 
@@ -26,6 +30,10 @@ class LightController {
         let data = this.lights.hpLow
         data.seg[0].sx = hp
         this._post(data)
+    }
+
+    setDefaultCol(col) {
+        this.defaultCol = col
     }
 
     lowMana(value) {
@@ -38,7 +46,6 @@ class LightController {
     firstBlood() {
         if(Object.keys(this.storedVal).length === 0) {
             this._getCurrent().then(() => {
-                console.log("posting fb")
                 this.execNotif(this.lights.megaStrobe, 1000)
             })
         }
@@ -47,14 +54,12 @@ class LightController {
     championKill() {
         if(Object.keys(this.storedVal).length === 0) {
             this._getCurrent().then(() => {
-                console.log("posting kill")
                 this.execNotif(this.lights.strobe, 1000)
             })
         }
     }
 
     setDefault(col) {
-        console.log("setting default", col)
         this.defaultCol = col
         this.clear()
     }
@@ -62,7 +67,6 @@ class LightController {
     minionKill() {
         if(Object.keys(this.storedVal).length === 0) {
             this._getCurrent().then(() => {
-                console.log("posting gold")
                 this.execNotif(this.lights.gold, 500)
             })
         }
@@ -76,7 +80,6 @@ class LightController {
     }
 
     _post(data) {
-        //console.log("posting", data)
         const res = this.ledClient.post('', data);
     }
 
@@ -91,11 +94,14 @@ class LightController {
         this.storedVal = {}
     }
 
+    _connectionCheck() {
+        this.ledClient.get('').then(() => this.connected = true).catch(() => this.connected=false)
+    }
+
     clear() {
 
         let defaultColour = this.lights.clear
         defaultColour.seg[0].col[0] = this.defaultCol
-        console.log("clearing", defaultColour.seg[0])
         this._post(defaultColour)
     }
 }

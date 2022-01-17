@@ -10,7 +10,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 export default function Top({open, onClose, handleOpen}) {
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1 }} marginBottom={'30px'}>
             <AppBar position="static">
                 <Toolbar variant="dense">
                     <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>

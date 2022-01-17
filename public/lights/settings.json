@@ -1,6 +1,1 @@
-{
-  "wled": true,
-  "wledURL": "192.168.0.203",
-  "openRGB": true,
-  "defaultCol": [255,255,255]
-}
+{"wled":true,"wledURL":"192.168.0.204","openRGB":true,"defaultCol":[0,77,227]}

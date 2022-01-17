@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const Poll = require('./lights/poll')
-const poll = new Poll()
+let poll = new Poll()
 const axios = require('axios')
 const fs = require('fs')
 const path = require('path');
@@ -24,7 +24,7 @@ function createWindow () {
                     summonerSpells = response.data
                     const win = new BrowserWindow({
                         title: "League of Lights",
-                        frame: true,
+                        frame: false,
                         width: 1200,
                         height: 800,
                         webPreferences: {
@@ -48,9 +48,19 @@ function createWindow () {
                         win.webContents.send('items', items)
                         win.webContents.send('champions', champions)
                         win.webContents.send('summonerSpells', summonerSpells)
-                        ipcMain.on('colour', (message, data) => {
-                            console.log("setting in main")
-                            poll.setDefaultCol(data)
+                        ipcMain.on('settingsSave', (message, data) => {
+                            if(data[1]) {
+                                poll.updateSettings(data[0])
+                                app.relaunch()
+                                app.quit()
+                            } else {
+                                poll.updateSettings(data[0])
+                            }
+                        })
+
+                        ipcMain.on('settings', () => {
+                            console.log('settings request')
+                            win.webContents.send('settingsRes', poll.getSettings())
                         })
                         poll.on('gameLoaded', (data) => {
                             win.webContents.send('connected', true)
@@ -63,6 +73,10 @@ function createWindow () {
 
                         poll.on('noGame', (data) => {
                             win.webContents.send('connected', false)
+                        })
+
+                        poll.on('connection', (data) => {
+                            win.webContents.send('connection', data)
                         })
 
 

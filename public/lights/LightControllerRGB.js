@@ -20,19 +20,25 @@ class LightControllerRGB {
 
         this.lights = lightValues
         this.notifQueue = []
+        this.connected = false
     }
 
 
     async connect() {
-        await this.client.connect()
-        const controllerCount = await this.client.getControllerCount()
-        for (let deviceId = 0; deviceId < controllerCount; deviceId++) {
-            this.deviceList.push(await this.client.getControllerData(deviceId))
-            await this.client.updateMode(deviceId, 'Direct')
+        try {
+            await this.client.connect()
+            const controllerCount = await this.client.getControllerCount()
+            for (let deviceId = 0; deviceId < controllerCount; deviceId++) {
+                this.deviceList.push(await this.client.getControllerData(deviceId))
+                await this.client.updateMode(deviceId, 'Direct')
+            }
+            this.connected = true
+            this.setup= true
+            this.clear()
+        } catch {
+            this.connected = false
         }
 
-        this.setup= true
-        this.clear()
     }
     lowHp(value) {
         this._post(this.red)
@@ -55,7 +61,6 @@ class LightControllerRGB {
     }
 
     championKill() {
-        console.log("kill", this.storedVal)
         if(this.storedVal.length === 0) {
             this._getCurrent()
             this.strobe()
@@ -80,34 +85,24 @@ class LightControllerRGB {
     }
 
     strobe() {
-        console.log("strobing")
         this._post(this.off)
         setTimeout(() => {
-            console.log("strobe 1")
             this._post(this.white)
             setTimeout(() => {
-                console.log("strobe 2")
                 this._post(this.off)
                 setTimeout(() => {
-                    console.log("strobe 3")
                     this._post(this.white)
                     setTimeout(() => {
-                        console.log("strobe 4")
                         this._post(this.off)
                         setTimeout(() => {
-                            console.log("strobe 5")
                             this._post(this.white)
                             setTimeout(() => {
-                                console.log("strobe 2")
                                 this._post(this.off)
                                 setTimeout(() => {
-                                    console.log("strobe 3")
                                     this._post(this.white)
                                     setTimeout(() => {
-                                        console.log("strobe 4")
                                         this._post(this.off)
                                         setTimeout(() => {
-                                            console.log("strobe 5")
                                             this._returnLast()
                                         }, 100)
                                     }, 100)
@@ -131,7 +126,6 @@ class LightControllerRGB {
                 let colArray = new Array(ledCount).fill(utils.color(r, g, b), 0, ledCount)
                 this.client.updateLeds(i, colArray)
             }
-            console.log("updating: ", colour)
             //await this.client.updateLeds(0, [utils.color(r, g, b)])
             this.colour = colour
         }

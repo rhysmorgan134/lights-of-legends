@@ -1,0 +1,25 @@
+.draggable {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-app-region: drag;
+}
+
+button {
+    -webkit-app-region: no-drag;
+}
+
+.MuiButton-root {
+    -webkit-app-region: no-drag;
+}
+
+.MuiButtonBase-root-MuiIconButton-root {
+    -webkit-app-region: no-drag;
+}
+
+.MuiIconButtonBase-root {
+    -webkit-app-region: no-drag;
+}
+
+body {
+    overflow-x: hidden;
+}
