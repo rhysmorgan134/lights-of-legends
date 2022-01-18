@@ -11,15 +11,15 @@ const fs = require('fs')
 let rgb = require('./openRGBClass')
 
 class Poll extends EventEmitter {
-    constructor() {
+    constructor(store) {
         super()
         this.wledURL = settings.wledURL
         this.allDataUrl = 'https://127.0.0.1:2999/liveclientdata/allgamedata'
         this.eventsUrl = 'https://127.0.0.1:2999/liveclientdata/eventdata'
         this.playerUrl = 'https://127.0.0.1:2999/liveclientdata/activeplayername'
         this.playersUrl = 'https://127.0.0.1:2999/liveclientdata/playerlist'
-        this.rawSettings = fs.readFileSync(path.join(__dirname, 'settings.json'))
-        this.settings = JSON.parse(this.rawSettings)
+        this.store = store
+        this.settings = store.getAll()
         this.eventCount = 0
         this.connected = false
         this.players = []
@@ -126,7 +126,7 @@ class Poll extends EventEmitter {
     }
 
     updateSettings(data) {
-        fs.writeFileSync(path.join(__dirname, 'settings.json'), JSON.stringify(data))
+        this.store.setAll(data)
         this.settings = data
         this.light.setDefault(data.defaultCol)
         this.light.clear()
@@ -155,7 +155,7 @@ class Poll extends EventEmitter {
 
     parseScore(score) {
         if(((score - this.lastCreepScore)  > 3) & ((score - this.lastCreepScore)  < 60)) {
-            this.light.minionKill()
+            //this.light.minionKill()
         }
         this.lastCreepScore = score
     }

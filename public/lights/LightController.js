@@ -46,7 +46,9 @@ class LightController {
     firstBlood() {
         if(Object.keys(this.storedVal).length === 0) {
             this._getCurrent().then(() => {
-                this.execNotif(this.lights.megaStrobe, 1000)
+                let temp = this.lights.megaStrobe
+                temp.seg[0].col[0] = this.defaultCol
+                this.execNotif(temp, 1000)
             })
         }
     }
@@ -54,7 +56,9 @@ class LightController {
     championKill() {
         if(Object.keys(this.storedVal).length === 0) {
             this._getCurrent().then(() => {
-                this.execNotif(this.lights.strobe, 1000)
+                let temp = this.lights.strobe
+                temp.seg[0].col[0] = this.defaultCol
+                this.execNotif(temp, 1000)
             })
         }
     }
@@ -67,7 +71,9 @@ class LightController {
     minionKill() {
         if(Object.keys(this.storedVal).length === 0) {
             this._getCurrent().then(() => {
-                this.execNotif(this.lights.gold, 500)
+                let temp = this.lights.gold
+                temp.seg[0].col[0] = this.defaultCol
+                this.execNotif(temp, 500)
             })
         }
     }

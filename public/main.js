@@ -1,14 +1,27 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
+const Store = require('./lights/Store')
 const Poll = require('./lights/poll')
-let poll = new Poll()
+const store = new Store({
+    configName: 'settings',
+    defaults: {
+        wled: false,
+        wledURL: '192.168.0.204',
+        openRGB: false,
+        defaultCol: [255,255,255]
+    }
+})
+let poll = new Poll(store)
 const axios = require('axios')
 const fs = require('fs')
 const path = require('path');
 const isDev = require('electron-is-dev');
+
 let versionO = {}
 let champions = {}
 let summonerSpells = {}
 let items = {}
+
+
 
 function createWindow () {
     // Create the browser window.
